@@ -25,5 +25,19 @@ pipeline {
                 sh 'docker build -t order-processing-platform:latest .'
             }
         }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    docker rm -f order-processing-app || true
+
+                    docker run -d \
+                      --name order-processing-app \
+                      -p 3000:3000 \
+                      --env-file .env \
+                      order-processing-platform:latest
+                '''
+            }
+        }
     }
 }
