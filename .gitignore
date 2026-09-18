@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+coverage/aws/
+awscliv2.zip
+aws/
+awscliv2.zip
+aws/
+awscliv2.zip
