@@ -28,16 +28,23 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh '''
-                    docker rm -f order-processing-app || true
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                        docker rm -f order-processing-app || true
 
-                    docker run -d \
-                      --name order-processing-app \
-                      -p 3000:3000 \
-                      --env-file .env \
-                      -v /var/jenkins_home/.aws:/root/.aws:ro \
-                      order-processing-platform:latest
-                '''
+                        docker run -d \
+                          --name order-processing-app \
+                          -p 3000:3000 \
+                          --env-file .env \
+                          -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
+                          -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
+                          -e AWS_REGION="ap-south-1" \
+                          order-processing-platform:latest
+                    '''
+                }
             }
         }
     }
