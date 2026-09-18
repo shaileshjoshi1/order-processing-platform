@@ -35,6 +35,7 @@ pipeline {
                       --name order-processing-app \
                       -p 3000:3000 \
                       --env-file .env \
+                      -v /var/jenkins_home/.aws:/root/.aws:ro \
                       order-processing-platform:latest
                 '''
             }
